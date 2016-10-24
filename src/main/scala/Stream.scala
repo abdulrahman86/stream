@@ -114,6 +114,14 @@ object Stream {
       case _ => None
     })
 
+  def zipWithF[A, B, C](s1: Stream[A])(s2: Stream[B])(f: (A,B) => C) : Stream[C] = {
+    (s1, s2) match {
+      case (Cons(x, t1), Cons(y, t2)) => Stream.cons(f(x, y), zipWithF(t1())(t2())(f))
+      case _ => Empty
+    }
+  }
+
+
   def takeWhile3[A](p: A => Boolean)(in: Stream[A]) : Stream[A] =
     unfold[A, Stream[A]](in){
       case Cons(h, t) if p(h) => Some(h, t())
