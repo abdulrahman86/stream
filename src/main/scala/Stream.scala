@@ -114,9 +114,9 @@ object Stream {
       case _ => None
     })
 
-  def zipWithF[A, B, C](s1: Stream[A])(s2: Stream[B])(f: (A,B) => C) : Stream[C] = {
+  def apply[A, B](s1: Stream[A => B])(s2: Stream[A]): Stream[B] = {
     (s1, s2) match {
-      case (Cons(x, t1), Cons(y, t2)) => Stream.cons(f(x, y), zipWithF(t1())(t2())(f))
+      case (Cons(x, t1), Cons(y, t2)) => Stream.cons(x(y), apply(t1())(t2()))
       case _ => Empty
     }
   }
